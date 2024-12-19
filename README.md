@@ -11,7 +11,7 @@ Link to minesweeper
 I made this to learn C++ and memory addresses and offsets.
 
 ## Screenshot
-![](MinesweeperTrainer1.png)
-
 ![](MinesweeperTrainer2.png)
+
+![](MinesweeperTrainer1.png)
 
