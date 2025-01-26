@@ -8,7 +8,7 @@
 #include "DrawOverlayTrainer.h"
 
 
-std::wstring GetProcessName(HANDLE hProcess) {
+std::string GetProcessName(HANDLE hProcess) {
 	TCHAR szProcessName[MAX_PATH] = TEXT("<unknown>");
 
 	if (hProcess != NULL) {
@@ -19,7 +19,7 @@ std::wstring GetProcessName(HANDLE hProcess) {
 			GetModuleBaseName(hProcess, hMod, szProcessName, sizeof(szProcessName) / sizeof(TCHAR));
 		}
 	}
-	return std::wstring(szProcessName);
+	return std::string(szProcessName);
 }
 std::vector<DWORD> GetAllProcessesListVector() {
 	DWORD aProcesses[1024], cbNeeded, cProcesses;
@@ -39,13 +39,13 @@ std::vector<DWORD> GetAllProcessesListVector() {
 	}
 	return processIds;
 }
-uintptr_t GetProcessIDbyProcessName(std::wstring targetProcessName) {
+uintptr_t GetProcessIDbyProcessName(std::string targetProcessName) {
 	uintptr_t PID = 0;
 
 	std::vector<DWORD> processList = GetAllProcessesListVector();
 	for (int i = 0; i < processList.size(); ++i) {
 		HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processList[i]);
-		std::wstring processName = GetProcessName(hProcess);
+		std::string processName = GetProcessName(hProcess);
 		if (processName == targetProcessName) {
 			//std::cout << Wstring_to_StdString(processName) << std::endl;
 			PID = GetProcessId(hProcess);
@@ -58,7 +58,7 @@ uintptr_t GetProcessIDbyProcessName(std::wstring targetProcessName) {
 	//System::Windows::Forms::MessageBox::Show("Can't find process with that PID.");
 	return PID;
 }
-BYTE* GetModuleBaseAddress(DWORD processId, std::wstring moduleName) {
+BYTE* GetModuleBaseAddress(DWORD processId, std::string moduleName) {
 	HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, processId);		// --> TH32CS_SNAPMODULE
 	if (hProcessSnap == INVALID_HANDLE_VALUE) {
 		return 0;
@@ -67,7 +67,7 @@ BYTE* GetModuleBaseAddress(DWORD processId, std::wstring moduleName) {
 	MODULEENTRY32 me32 = { 0 };
 	me32.dwSize = sizeof(MODULEENTRY32);
 
-	if (Module32FirstW(hProcessSnap, &me32)) {
+	if (Module32First(hProcessSnap, &me32)) {
 		do {
 			if (me32.szModule == moduleName) {
 				CloseHandle(hProcessSnap);
@@ -75,7 +75,7 @@ BYTE* GetModuleBaseAddress(DWORD processId, std::wstring moduleName) {
 				return baseAddress;
 				//return (DWORD)me32.modBaseAddr;
 			}
-		} while (Module32NextW(hProcessSnap, &me32));
+		} while (Module32Next(hProcessSnap, &me32));
 	}
 	CloseHandle(hProcessSnap);
 	return 0;
@@ -116,7 +116,7 @@ void printWideString(const char* buffer) {
 }
 /// DRAW WITH GDI32.dll
 void DrawPointToThisSquareField(Player_struct playerStruct, int row, int col) {
-	HWND hWnd = FindWindow(NULL, L"Minesweeper");	// Get Window (form)	
+	HWND hWnd = FindWindow(NULL, "Minesweeper");	// Get Window (form)	
 	HDC hDC = GetDC(hWnd);// Get the device context
 
 	//int blockSize = (windowWidth - 35) / 8;		//30	//16
@@ -226,7 +226,7 @@ void MinesweeperSolver(Player_struct& playerStruct) {
 }
 void MinesweeperSolverWriter(HANDLE hProcess, Player_struct& playerStruct) {
 	// PROCESS:
-	std::wstring processName = L"WINMINE.EXE";
+	std::string processName = "WINMINE.EXE";
 	uintptr_t processId = GetProcessIDbyProcessName(processName);
 
 	// PROCESS:
@@ -248,7 +248,7 @@ void MinesweeperSolverWriter(HANDLE hProcess, Player_struct& playerStruct) {
 int main() {
 	while (true) {
 		// PROCESS:
-		std::wstring processName = L"WINMINE.EXE";
+		std::string processName = "WINMINE.EXE";
 		uintptr_t processId = GetProcessIDbyProcessName(processName);
 
 		// PROCESS:
@@ -258,7 +258,7 @@ int main() {
 			//return 1;
 		}
 		// MODULE:	(Also works)
-		std::wstring moduleName = L"WINMINE.EXE";
+		std::string moduleName = "WINMINE.EXE";
 		BYTE* moduleBaseAddress_b = GetModuleBaseAddress(processId, moduleName);
 		uintptr_t moduleBaseAddress = (uintptr_t)moduleBaseAddress_b;
 		//std::cout << "Module: 0x" << std::hex << moduleBaseAddress << std::endl;

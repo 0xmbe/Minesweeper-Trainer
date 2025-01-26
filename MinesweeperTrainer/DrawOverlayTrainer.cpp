@@ -40,14 +40,14 @@ HWND CreateOverlayWindow(HINSTANCE hInstance) {
 	WNDCLASS wc = {};
 	wc.lpfnWndProc = WindowProc;
 	wc.hInstance = hInstance;
-	wc.lpszClassName = L"OverlayWindowClass";
+	wc.lpszClassName = "OverlayWindowClass";
 	RegisterClass(&wc);
 
 	// Create the overlay window
 	HWND hwnd = CreateWindowEx(
 		WS_EX_LAYERED | WS_EX_TOPMOST | WS_EX_TRANSPARENT,
-		L"OverlayWindowClass",
-		L"Overlay",
+		"OverlayWindowClass",
+		"Overlay",
 		WS_POPUP | WS_VISIBLE,
 		0, 200, 500, 500,										// Position and size of the window
 		NULL, NULL, hInstance, NULL

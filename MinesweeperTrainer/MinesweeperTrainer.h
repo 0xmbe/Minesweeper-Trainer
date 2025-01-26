@@ -42,13 +42,13 @@ struct Player_struct {
 	uintptr_t MineFieldWidth;
 };
 
-std::wstring GetProcessName(HANDLE hProcess);
+std::string GetProcessName(HANDLE hProcess);
 
 std::vector<DWORD> GetAllProcessesListVector();
 
-uintptr_t GetProcessIDbyProcessName(std::wstring targetProcessName);
+uintptr_t GetProcessIDbyProcessName(std::string targetProcessName);
 
-BYTE* GetModuleBaseAddress(DWORD processId, std::wstring moduleName);
+BYTE* GetModuleBaseAddress(DWORD processId, std::string moduleName);
 
 void GetPlayerStructData(HANDLE hProcess, Player_struct& playerStruct);
 
