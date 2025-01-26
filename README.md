@@ -1,6 +1,9 @@
 # Minesweeper-Trainer
 Trainer for old WINMINE Minesweeper
 
+## Build
+For gcc use makefile
+
 ## Usage
 Run Minesweeper and MinesweeperTrainer -> Overlay will be drawn over the mines.
 
